@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interaktif MTs DDI Kel Baru</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            background-attachment: fixed;
+        }
+
+        /* Ambient glowing effect background */
+        .ambient-glow {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, rgba(16,185,129,0.15) 50%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Custom Glassmorphism Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Smooth Screen Transitions */
+        .fade-in-up {
+            animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .fade-in-scale {
+            animation: fadeInScale 0.35s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Pulse glow animation for CTA buttons */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 28px rgba(16, 185, 129, 0.7); }
+        }
+
+        .btn-glow {
+            animation: pulseGlow 3s infinite;
+        }
+
+        /* Floating Animation */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+        }
+
+        .float-anim {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between p-3 sm:p-6 relative overflow-x-hidden">
+
+    <!-- Ambient background light -->
+    <div class="ambient-glow"></div>
+
+    <!-- Header App -->
+    <header class="relative z-10 max-w-4xl w-full mx-auto mb-4 sm:mb-6 flex justify-between items-center bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl border border-slate-700/60 shadow-xl">
+        <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-gradient-to-tr from-emerald-600 to-teal-400 text-white rounded-xl shadow-lg shadow-emerald-500/20 transform hover:rotate-6 transition-transform">
+                <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-base sm:text-xl font-extrabold text-white tracking-wide leading-tight">MTs DDI KEL BARU</h1>
+                <p class="text-[11px] sm:text-xs text-emerald-400 font-medium">Aplikasi Quiz & Ujian Online Interaktif</p>
+            </div>
+        </div>
+
+        <div id="user-nav-info" class="hidden flex items-center space-x-3">
+            <div class="text-right hidden sm:block">
+                <p id="user-display-name" class="text-xs font-bold text-slate-100">User</p>
+                <p id="user-display-role" class="text-[10px] text-emerald-400 uppercase font-semibold">Peserta</p>
+            </div>
+            <button id="logout-btn" class="p-2 text-rose-400 hover:bg-rose-950/40 rounded-xl transition-all border border-rose-800/40 flex items-center space-x-1.5 text-xs font-semibold hover:border-rose-500/50" title="Keluar">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">Keluar</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="relative z-10 max-w-4xl w-full mx-auto my-auto flex-1 flex flex-col justify-center">
+        
+        <!-- 1. LANDING / ROLE SELECTOR SCREEN -->
+        <div id="role-screen" class="glass-card rounded-3xl p-6 sm:p-12 text-center fade-in-up">
+            <div class="w-24 h-24 bg-gradient-to-tr from-emerald-500 to-teal-400 text-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/20 float-anim">
+                <i data-lucide="school" class="w-12 h-12"></i>
+            </div>
+            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 font-semibold text-xs rounded-full inline-block mb-3">Sistem Evaluasi Pembelajaran</span>
+            <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight mb-1">Selamat Datang di Quiz Interaktif</h2>
+            <p class="text-indigo-600 font-bold text-lg sm:text-2xl mb-6">MTs DDI KEL BARU</p>
+            <p class="text-slate-600 mb-8 max-w-md mx-auto text-xs sm:text-sm leading-relaxed">
+                Silakan pilih peran Anda untuk mulai mengerjakan kuis atau mengelola bank soal.
+            </p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-lg mx-auto">
+                <button id="select-student-btn" class="p-5 bg-white/80 hover:bg-emerald-50/80 border-2 border-slate-200 hover:border-emerald-500 rounded-2xl transition-all duration-300 text-left flex items-center space-x-4 group shadow-md hover:shadow-xl hover:-translate-y-1">
+                    <div class="p-3.5 bg-emerald-600 group-hover:bg-emerald-500 text-white rounded-xl shadow-md group-hover:scale-110 transition-all">
+                        <i data-lucide="user-check" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base group-hover:text-emerald-700 transition-colors">Peserta / Siswa</h3>
+                        <p class="text-xs text-slate-500">Mulai pengerjaan quiz</p>
+                    </div>
+                </button>
+
+                <button id="select-admin-btn" class="p-5 bg-white/80 hover:bg-indigo-50/80 border-2 border-slate-200 hover:border-indigo-500 rounded-2xl transition-all duration-300 text-left flex items-center space-x-4 group shadow-md hover:shadow-xl hover:-translate-y-1">
+                    <div class="p-3.5 bg-indigo-600 group-hover:bg-indigo-500 text-white rounded-xl shadow-md group-hover:scale-110 transition-all">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base group-hover:text-indigo-700 transition-colors">Administrator</h3>
+                        <p class="text-xs text-slate-500">Kelola & tambah soal</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. LOGIN FORM (Admin / Peserta) -->
+        <div id="login-screen" class="hidden glass-card rounded-3xl p-6 sm:p-10 max-w-md mx-auto w-full fade-in-scale">
+            <button id="back-to-role-btn" class="mb-5 text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center space-x-1.5 transition-colors">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Kembali Pilih Peran</span>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                    <i data-lucide="user" class="w-6 h-6"></i>
+                </div>
+                <h3 id="login-title" class="text-xl font-extrabold text-slate-900">Login Peserta</h3>
+                <p id="login-subtitle" class="text-xs text-slate-500 mt-1">Masukkan nama Anda untuk memulai quiz</p>
+            </div>
+
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5" id="username-label">Nama Lengkap</label>
+                    <input type="text" id="username-input" required class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all bg-white/70" placeholder="Masukkan nama...">
+                </div>
+
+                <div id="password-group" class="hidden">
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Password Admin</label>
+                    <input type="password" id="password-input" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all bg-white/70" placeholder="Masukkan password admin (default: admin123)">
+                </div>
+
+                <p id="login-error" class="hidden text-xs text-rose-600 font-semibold text-center bg-rose-50 p-2.5 rounded-lg border border-rose-100"></p>
+
+                <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/30 transition-all text-sm flex items-center justify-center space-x-2">
+                    <span>Masuk Aplikasi</span>
+                    <i data-lucide="log-in" class="w-4 h-4"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- 3. DASHBOARD PESERTA / WELCOME CARD -->
+        <div id="student-welcome-card" class="hidden glass-card rounded-3xl p-6 sm:p-10 text-center fade-in-scale">
+            <div class="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-teal-400 text-white rounded-3xl flex items-center justify-center mx-auto mb-5 shadow-xl shadow-emerald-500/20 float-anim">
+                <i data-lucide="sparkles" class="w-10 h-10"></i>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-1">Siap Memulai Kuis?</h2>
+            <p class="text-xs sm:text-sm text-indigo-600 font-bold mb-6">MTs DDI KEL BARU — Evaluasi Interaktif</p>
+
+            <div class="bg-slate-50/80 rounded-2xl p-5 mb-8 max-w-sm mx-auto text-left text-xs space-y-3 border border-slate-200/80 shadow-inner">
+                <div class="flex justify-between items-center text-slate-600 border-b border-slate-200/60 pb-2">
+                    <span class="flex items-center space-x-2"><i data-lucide="help-circle" class="w-4 h-4 text-emerald-600"></i><span>Jumlah Soal:</span></span>
+                    <span id="quiz-total-questions-info" class="font-extrabold text-slate-800 bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md">5 Soal</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-600 border-b border-slate-200/60 pb-2">
+                    <span class="flex items-center space-x-2"><i data-lucide="shuffle" class="w-4 h-4 text-indigo-600"></i><span>Aturan Pengacakan:</span></span>
+                    <span class="font-bold text-slate-800">Soal & Opsi Diacak</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-600">
+                    <span class="flex items-center space-x-2"><i data-lucide="volume-2" class="w-4 h-4 text-amber-600"></i><span>Efek Suara:</span></span>
+                    <span class="font-bold text-emerald-600">Aktif</span>
+                </div>
+            </div>
+
+            <button id="start-btn" class="btn-glow w-full sm:w-auto px-10 py-4 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-extrabold rounded-2xl shadow-xl transition-all flex items-center justify-center space-x-2.5 mx-auto text-sm tracking-wide">
+                <span>Mulai Kerjakan Sekarang</span>
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- 4. QUIZ SCREEN -->
+        <div id="quiz-card" class="hidden glass-card rounded-3xl p-6 sm:p-10 fade-in-up">
+            <!-- Progress Bar & Indicator -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center text-xs font-bold text-slate-500 mb-2">
+                    <span id="question-number" class="text-indigo-600 font-extrabold">Pertanyaan 1</span>
+                    <span id="answered-status" class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg border border-indigo-100">Terjawab: 0/0</span>
+                </div>
+                <div class="w-full bg-slate-200/70 rounded-full h-3 overflow-hidden p-0.5 border border-slate-200">
+                    <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500 shadow-sm" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question Text Card -->
+            <div class="mb-6 bg-slate-50/90 p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                <h3 id="question-text" class="text-base sm:text-lg font-extrabold text-slate-800 leading-relaxed">
+                    <!-- Text soal -->
+                </h3>
+            </div>
+
+            <!-- Options Container -->
+            <div id="options-container" class="space-y-3 mb-8">
+                <!-- Pilihan jawaban -->
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="flex justify-between items-center pt-5 border-t border-slate-200/80">
+                <button id="prev-btn" class="px-5 py-3 rounded-xl border border-slate-300 bg-white text-slate-700 font-bold hover:bg-slate-100 transition-all text-xs sm:text-sm flex items-center space-x-1.5 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    <span>Sebelumnya</span>
+                </button>
+                <button id="next-btn" class="px-7 py-3 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all text-xs sm:text-sm flex items-center space-x-2">
+                    <span id="next-btn-text">Selanjutnya</span>
+                    <i data-lucide="chevron-right" id="next-btn-icon" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 5. RESULT SCREEN -->
+        <div id="result-card" class="hidden glass-card rounded-3xl p-6 sm:p-12 text-center fade-in-scale">
+            <div class="w-24 h-24 bg-gradient-to-tr from-emerald-500 to-teal-400 text-white rounded-3xl flex items-center justify-center mx-auto mb-5 shadow-2xl shadow-emerald-500/30 float-anim">
+                <i data-lucide="trophy" class="w-12 h-12 text-amber-200"></i>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-1">Jawaban Berhasil Terkirim!</h2>
+            <p class="text-slate-600 mb-6 text-xs sm:text-sm">Terima kasih telah menyelesaikan kuis interaktif <strong>MTs DDI Kel Baru</strong>.</p>
+            
+            <div class="bg-gradient-to-b from-slate-50 to-emerald-50/40 rounded-3xl p-6 sm:p-8 mb-6 max-w-xs mx-auto border border-emerald-200/80 shadow-inner">
+                <div class="text-xs font-bold text-emerald-800 uppercase tracking-widest mb-1">Skor Akhir Anda</div>
+                <div id="final-score" class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 my-1">0</div>
+                <p id="score-details" class="text-xs text-slate-600 font-medium">Menjawab <span id="answered-count-text" class="font-bold text-slate-800">0</span> dari <span id="total-count-text" class="font-bold text-slate-800">0</span> pertanyaan</p>
+            </div>
+
+            <!-- Detail Pembahasan Jawaban Salah -->
+            <div id="wrong-answers-container" class="hidden mb-8 text-left bg-white/80 p-5 rounded-2xl border border-rose-200/80 shadow-sm max-h-80 overflow-y-auto">
+                <h4 class="text-xs font-black text-rose-700 uppercase tracking-wider mb-3 flex items-center space-x-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600"></i>
+                    <span>Evaluasi Jawaban Salah (<span id="wrong-count-tag">0</span>)</span>
+                </h4>
+                <div id="wrong-answers-list" class="space-y-3">
+                    <!-- Item jawaban salah -->
+                </div>
+            </div>
+
+            <button id="restart-btn" class="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold rounded-xl shadow-xl shadow-emerald-600/25 transition-all flex items-center justify-center space-x-2 mx-auto text-sm">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                <span>Kerjakan Ulang Kuis</span>
+            </button>
+        </div>
+
+        <!-- 6. DASHBOARD ADMIN -->
+        <div id="admin-dashboard" class="hidden space-y-6 fade-in-up">
+            <div class="glass-card rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-black text-slate-900">Dashboard Administrator Soal</h2>
+                    <p class="text-xs text-slate-500">Kelola bank soal Quiz MTs DDI Kel Baru</p>
+                </div>
+                <button id="open-add-modal-btn" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-500/20 flex items-center space-x-2 transition-all">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Tambah Soal Baru</span>
+                </button>
+            </div>
+
+            <!-- List Soal -->
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-800 flex items-center space-x-2">
+                        <i data-lucide="database" class="w-4 h-4 text-indigo-600"></i>
+                        <span>Daftar Bank Soal (<span id="admin-question-count">0</span>)</span>
+                    </h3>
+                    <button id="reset-default-questions-btn" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold hover:underline flex items-center space-x-1">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                        <span>Reset ke Soal Bawaan</span>
+                    </button>
+                </div>
+
+                <div id="admin-questions-list" class="space-y-4">
+                    <!-- Item soal -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL FORM TAMBAH SOAL (ADMIN) -->
+    <div id="add-modal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-5 max-h-[90vh] overflow-y-auto fade-in-scale">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-extrabold text-slate-900 text-base flex items-center space-x-2">
+                    <i data-lucide="file-plus" class="w-5 h-5 text-indigo-600"></i>
+                    <span>Tambah Soal Baru</span>
